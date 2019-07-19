@@ -12,3 +12,5 @@ Example of usage:
 ```
 python test_multi.py 0
 ```
+
+The fps will print once per minute.
