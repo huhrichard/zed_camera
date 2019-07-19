@@ -88,6 +88,7 @@ def main_single(cam_id):
     key = ''
     start = time.time()
     minutes_gone = 0
+    hours_gone = 0
     # counter = 100
     while key != 113:  # for 'q' key
         err = zed1.grab(runtime)
@@ -96,10 +97,20 @@ def main_single(cam_id):
             cv2.imshow(winname, mat1.get_data())
         processed = time.time() - start
         current_ran_minute = (processed%3600)//(60)
+        current_ran_hour = processed//3600
         # if (current_ran_minute-minutes_gone) >= 1:
         minutes_gone = current_ran_minute
-        print('Ran for ', processed//(3600),'hours ', (processed%3600)//(60), 'mins ', processed%60,'seconds')
-        print("Camera FPS: {0}.".format(zed1.get_camera_fps()))
+        if zed1.get_camera_fps() == fps:
+            print('Ran for ', processed//(3600),'hours ', (processed%3600)//(60), 'mins ', processed%60,'seconds')
+            print("Camera FPS: {0}.".format(zed1.get_camera_fps()))
+        if zed1.get_camera_fps() < fps:
+            if (current_ran_hour - hours_gone) >= 1:
+                print('FPS dropped')
+                print('Ran for ', processed // (3600), 'hours ', (processed % 3600) // (60), 'mins ', processed % 60,
+                      'seconds')
+                print("Camera FPS: {0}.".format(zed1.get_camera_fps()))
+                hours_gone = current_ran_hour
+
         # err = zed2.grab(runtime)
         # if err == sl.ERROR_CODE.SUCCESS:
         #     zed2.retrieve_image(mat2, sl.VIEW.VIEW_LEFT)
