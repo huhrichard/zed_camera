@@ -22,9 +22,6 @@ def main():
     err = zed1.open(init_params)
     if err != sl.ERROR_CODE.SUCCESS:
         print(repr(err))
-
-
-
     init_params.camera_linux_id = 1 # Specify the camera index
     if not zed2.is_opened():
         print("Opening ZED Camera 2 ...")
@@ -89,13 +86,19 @@ def main_single(cam_id):
     cv2.resizeWindow(winname, 640, 360)
 
     key = ''
-    # start = time.time()
+    start = time.time()
+    minutes_gone = 0
     # counter = 100
     while key != 113:  # for 'q' key
         err = zed1.grab(runtime)
         if err == sl.ERROR_CODE.SUCCESS:
             zed1.retrieve_image(mat1, sl.VIEW.VIEW_LEFT)
             cv2.imshow(winname, mat1.get_data())
+        processed = time.time() - start
+        current_ran_minute = (processed%3600)//(60)
+        # if (current_ran_minute-minutes_gone) >= 1:
+        minutes_gone = current_ran_minute
+        print('Ran for ', processed//(3600),'hours ', (processed%3600)//(60), 'mins ', processed%60,'seconds')
         print("Camera FPS: {0}.".format(zed1.get_camera_fps()))
         # err = zed2.grab(runtime)
         # if err == sl.ERROR_CODE.SUCCESS:
